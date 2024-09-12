@@ -1,0 +1,127 @@
+.bg-color-p{
+    background-color: #E2D8CD;
+}
+
+/* NavBar */
+.a-nav{
+    text-decoration: none;
+    font-size:145%;
+    border: 1px solid transparent;
+    transition: transform .3s ease-out 0s;
+    transition:0.5s;
+}
+
+.nv-drop{
+    text-decoration: none;
+    font-size: 120%;
+    transition: transform .3s ease-out 0s;
+    transition:0.5s;
+    color:#634C35;
+}
+
+
+.nv-drop:hover{
+    text-decoration: none;
+    font-size: 120%;
+    color:#000000;
+    transform: scale(1.1);
+}
+
+.a-nav:hover{
+    transform: scale(1.1);
+    display: inline-block;
+}
+
+.img-logo{
+    width: 15%;
+    height: 15%;
+}
+
+.img-logo:hover{
+    filter: brightness(1.1);
+}
+
+#btn-agregar{
+    margin-left: 5%;
+    margin-bottom: 10%;
+}
+
+#detalles-monstruo{
+    border-color: 2px solid #634C35;
+}
+
+/* Descripcion monstruos */
+
+.img-logo-monstruos{
+    width: 40px;
+}
+
+.monster-card {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s;
+  }
+
+  .monster-card:hover {
+    background-color: #e9ecef;
+  }
+
+  .selected-monster {
+    background-color: #d4edda;
+  }
+
+  .monster-details {
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .monster-image {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .monster-description {
+    margin-top: 10px;
+  }
+
+  .tabs-section {
+    margin-top: 20px;
+  }
+
+  .tab-content {
+    margin-top: 20px;
+  }
+
+  .stretched-link {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+.card {
+    position: relative;
+}
+.card-body {
+    position: relative;
+    z-index: 2;
+    
+}
+
+.card-img{
+    transition: transform .3s ease-out 0s;
+    transition:0.5s;
+}
+
+.card-img {
+    transition: transform 0.5s ease, filter 0.5s ease; /* Combina ambas transiciones en una sola regla */
+}
+
+.card-img:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}

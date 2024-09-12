@@ -2,80 +2,31 @@
 
 @section('content')
 <div class="container">
+  <div class="justify-content-center">
+    <a href="{{url('Monster/create')}}" class="btn btn-success">Registrar nuevo Monstruo</a>
+  </div>  
+<br/>
+<br/>
 
-@if(Session::has('mensaje'))
-<div class="alert alert-dismissible" role="alert">
-{{Session::get('mensaje')}}
-<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-<span aria-hidden="true">&times;</span>
-</button >
-
+<div class="row">
+    @foreach ($monsters as $monster)
+    <div class="col-md-4">
+        <div class="card mb-3 card-img">
+             <a href="{{ url('/Monster/'.$monster->id) }}" class="stretched-link "></a>
+            <img class="card-img-top card-img" src="{{ asset('storage').'/'.$monster->img_logo }}" alt="{{ $monster->name }}" href="{{ url('/Monster/'.$monster->id) }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ $monster->name }}</h5>
+                <p class="card-text">{{ $monster->description }}</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Categoría: {{ $monster->category }}</li>
+                    <li class="list-group-item">Ubicación: {{ $monster->ubication }}</li>
+                    <li class="list-group-item">Debilidades Elementales: {{ $monster->wk_elemental }}</li>
+                    <li class="list-group-item">Estados Alterados: {{ $monster->wk_estate }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </div>
-@endif
-
-
-<a href="{{url('Monster/create')}}" class="btn btn-success"> Registrar nuevo Monstruo</a>
-<br/>
-<br/>
-<table class="table table-light">
-
-    <thead class="thead-light">
-        <tr>
-            <th>#</th>
-
-            <th>Foto</th>
-
-            <th>name</th>
-            <th>description</th>
-            <th>category</th>
-            <th>ubication</th>
-            <th>wk_elemental</th>
-            <th>wk_estate</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach( $monsters as $Monster)
-        <tr>
-            <td>{{ $Monster-> id }}</td>
-
-
-
-            <td>
-            <img class="img-thumbnail img-fluid"src="{{ asset('storage').'/'.$Monster->img_monster}}" width="100" alt="">    
-            
-        
-        </td>
-
-            <td>{{ $Monster-> name }}</td>
-            <td>{{ $Monster-> description }}</td>
-            <td>{{ $Monster-> category }}</td>
-            <td>{{ $Monster-> ubication }}</td>
-            <td>{{ $Monster-> wk_elemental }}</td>
-            <td>{{ $Monster-> wk_estate }}</td>
-
-            <td>
-             <a href="{{ url('/Monster/'.$Monster->id.'/edit') }}" class="btn btn-warning">
-          Editar
-
-             </a>  
-            
-            
-           | 
-        <form action="{{url('/Monster/'.$Monster->id) }}" class="d-inline" method="post">
-        @csrf
-        {{ method_field('DELETE')}}
-        <input class="btn btn-danger"type="submit" onclick="return confirm('¿Quieres borrar?')" 
-        value="Borrar">
-
-        </form>        
-        </td>
-        </tr>
-        @endforeach
-
-    </tbody>
-</table>
-{!!$monsters->links()!!}
 </div>
 @endsection

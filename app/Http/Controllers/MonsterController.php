@@ -12,75 +12,72 @@ class MonsterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-        $datos['monsters']=Monster::paginate(5);
-        return view('Monster.index',$datos);
+    public function index($id = null)
+{
+    $monsters = Monster::all(); // Cargamos todos los monstruos
+    $selectedMonster = null;
+
+    if ($id) {
+        // Cargar el monstruo seleccionado solo si se selecciona uno
+        $selectedMonster = Monster::find($id);
     }
+
+    return view('Monster.index', compact('monsters', 'selectedMonster'));
+}
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
         return view('Monster.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-
     public function store(Request $request)
     {
-        //
-        $campos=[
-            'name'=>'required|string|max:100',
-            'description'=>' required|string|max:100',
-            'category'=>'required|string|max:100',
-            'ubication'=>'required|string|max:100',
-            'wk_elemental'=>'required|string|max:100',
-            'wk_estate'=>'required|string|max:100',
-            'img_monster'=>' required|max:10000|mimes: jpeg,png, jpg',
+        // Reglas de validación
+        $campos = [
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:300',
+            'category' => 'required|string|max:100',
+            'ubication' => 'required|string|max:100',
+            'wk_elemental' => 'required|string|max:100',
+            'wk_estate' => 'required|string|max:100',
+            'img_monster' => 'required|max:2048|mimes:jpeg,png,jpg,webp',  /* Se asigna 2048 a el campo para admitir mejores resoluciones en formato png*/ 
+            'img_logo' => 'required|max:2048|mimes:jpeg,png,jpg,webp',
         ];
 
-        $mensaje=[
-        'required'=> 'El :attribute es requerido',
-
+        // Mensajes personalizados
+        $mensaje = [
+            'required' => 'El :attribute es requerido',
+            'img_monster.required' => 'La imagen del monstruo es requerida',
+            'img_logo.required' => 'El logo del monstruo es requerido',
         ];
 
-        if($request->hasFile('img_monster')){
-          $campos=['img_monster'=>' required|max:10000|mimes: jpeg,png, jpg']; 
-        $mensaje=['img_monster required'=> 'La foto requerida'];
-        }   
-         $this->validate($request, $campos, $mensaje);
+        // Validar la solicitud
+        $this->validate($request, $campos, $mensaje);
 
+        // Procesar los archivos subidos
+        $datosMonster = $request->except('_token');
 
-
-
-
-
-
-
-
-        $datosMonster = request()->except('_token');
-        if($request->hasFile('img_monster')){
-            $datosMonster['img_monster']=$request->file('img_monster')->store('uploads','public');
+        // Guardar imagen del monstruo
+        if ($request->hasFile('img_monster')) {
+            $datosMonster['img_monster'] = $request->file('img_monster')->store('uploads', 'public');
         }
+
+        // Guardar logo del monstruo
+        if ($request->hasFile('img_logo')) {
+            $datosMonster['img_logo'] = $request->file('img_logo')->store('uploads', 'public');
+        }
+
+        // Insertar los datos en la base de datos
         Monster::insert($datosMonster);
 
-   
-
-        return redirect('Monster')->with('mensaje','Monster agregado con exito');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Monster $Monster)
-    {
-        //
+        return redirect('Monster')->with('mensaje', 'Monster agregado con éxito');
     }
 
     /**
@@ -88,12 +85,8 @@ class MonsterController extends Controller
      */
     public function edit($id)
     {
-        //
-        $Monster=Monster::findOrFail($id);
-
-        return view('Monster.edit', compact('Monster') );
-    
-
+        $Monster = Monster::findOrFail($id);
+        return view('Monster.edit', compact('Monster'));
     }
 
     /**
@@ -101,45 +94,44 @@ class MonsterController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $campos=[
-            'name'=>'required|string|max:100',
-            'description'=>' required|string|max:100',
-            'category'=>'required|string|max:100',
-            'ubication'=>'required|string|max:100',
-            'wk_elemental'=>'required|string|max:100',
-            'wk_estate'=>'required|string|max:100',
-        
-           
+        $campos = [
+            'name' => 'required|string|max:100',
+            'description' => 'required|string|max:300',
+            'category' => 'required|string|max:100',
+            'ubication' => 'required|string|max:100',
+            'wk_elemental' => 'required|string|max:100',
+            'wk_estate' => 'required|string|max:100',
         ];
 
-        $mensaje=[
-        'required'=> 'El :attribute es requerido',
-        'img_monster required'=> 'La foto requerida',
+        $mensaje = [
+            'required' => 'El :attribute es requerido',
+            'img_monster.required' => 'La imagen del monstruo es requerida',
+            'img_logo.required' => 'El logo del monstruo es requerido',
         ];
 
-         $this->validate($request, $campos, $mensaje);
+        // Validar la solicitud
+        $this->validate($request, $campos, $mensaje);
 
+        // Actualizar datos
+        $datosMonster = $request->except(['_token', '_method']);
 
-        //
-        $datosMonster = request()->except(['_token', '_method']);
-
-        if($request->hasFile('img_monster')){
-            $Monster=Monster::findOrFail($id);
-            Storage::delete('public/'.$Monster->img_monster);
-            $datosMonster['img_monster']=$request->file('img_monster')->store('uploads','public');
+        // Actualizar imagen del monstruo
+        if ($request->hasFile('img_monster')) {
+            $Monster = Monster::findOrFail($id);
+            Storage::delete('public/' . $Monster->img_monster);
+            $datosMonster['img_monster'] = $request->file('img_monster')->store('uploads', 'public');
         }
 
+        // Actualizar logo del monstruo
+        if ($request->hasFile('img_logo')) {
+            $Monster = Monster::findOrFail($id);
+            Storage::delete('public/' . $Monster->img_logo);
+            $datosMonster['img_logo'] = $request->file('img_logo')->store('uploads', 'public');
+        }
 
+        Monster::where('id', '=', $id)->update($datosMonster);
 
-
-
-        Monster::where('id','=', $id)->update($datosMonster);
-
-        $Monster=Monster::findOrFail($id);
-
-        //return view('Monster.edit', compact('Monster') );
-        return redirect('Monster')->with('mensaje','Monster Modificado');
+        return redirect('Monster')->with('mensaje', 'Monster modificado con éxito');
     }
 
     /**
@@ -147,13 +139,23 @@ class MonsterController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $Monster = Monster::findOrFail($id);
 
-        $Monster=Monster::findOrFail($id);
-        if(Storage::delete('public/'.$Monster->img_monster)){
+        if (Storage::delete('public/' . $Monster->img_monster) && Storage::delete('public/' . $Monster->img_logo)) {
             Monster::destroy($id);
         }
-      
-        return redirect('Monster')->with('mensaje','Monster Borrado');
+
+        return redirect('Monster')->with('mensaje', 'Monster borrado con éxito');
     }
+
+
+    public function show($id)
+    {
+        $monster = Monster::findOrFail($id);
+        return view('Monster.details', compact('monster'));
+    }
+    
+    
+
+
 }

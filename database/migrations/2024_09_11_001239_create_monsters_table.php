@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('wk_elemental');
             $table->string('wk_estate');
             $table->string('img_monster');
+            $table->string('img_logo');
+
             $table->timestamps();
         });
     }
